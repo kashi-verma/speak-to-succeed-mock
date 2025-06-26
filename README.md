@@ -1,73 +1,56 @@
-# Welcome to your Lovable project
+# SpeakSuccess 🎤 – Voice AI Mock Interview App
 
-## Project info
+**SpeakSuccess** is an AI-powered voice-to-voice mock interview simulator that helps job seekers prepare for real-world interviews. It delivers dynamic, role-specific questions, listens to your spoken answers, and continues the conversation just like a real interviewer.
 
-**URL**: https://lovable.dev/projects/30a6432b-3068-4365-9fea-724b7464f076
+---
 
-## How can I edit this code?
+## 🌟 Features
 
-There are several ways of editing your application.
+- 🎯 **Role-Based Interview Tracks**  
+  Choose from roles like Software Engineer, Product Manager, or Business Analyst to get tailored questions.
 
-**Use Lovable**
+- 🗣️ **Voice Input**  
+  Answer questions naturally using your microphone with live voice-to-text.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/30a6432b-3068-4365-9fea-724b7464f076) and start prompting.
+- 🔊 **Audio Feedback**  
+  Questions are spoken aloud using AI-powered text-to-speech for a realistic mock interview experience.
 
-Changes made via Lovable will be committed automatically to this repo.
+- 🔁 **Conversational Loop**  
+  After each answer, the AI follows up with the next relevant question automatically.
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 📸 Screenshots
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 🎯 Home Page
+![Home Page](/mnt/data/c0ac499c-c998-4d0f-9401-c78bc37789bc.png)
 
-Follow these steps:
+### 👨‍💻 Role Selection
+![Role Selection](/mnt/data/c0ec6b4f-81d7-4f43-8d24-e617a658062d.png)
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### 🧠 Interview Simulation
+![Interview Interface](/mnt/data/850b8aaa-68e1-4b9c-bb74-ee798305069e.png)
 
-# Step 2: Navigate to the project directory.
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend**: React + TypeScript + Tailwind CSS + shadcn-ui
+- **Voice Input**: Web Speech API (or Google STT)
+- **Voice Output**: Text-to-Speech via browser or external API
+- **AI Brain**: Powered by OpenAI API (connected via Lovable backend)
+
+---
+
+## 🚀 Getting Started (Local Development)
+
+```bash
+# Clone the project
+git clone <YOUR_REPO_URL>
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/30a6432b-3068-4365-9fea-724b7464f076) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)

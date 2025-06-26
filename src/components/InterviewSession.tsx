@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -60,13 +59,13 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
   useEffect(() => {
     // Initialize Speech Recognition
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = true;
-      recognitionRef.current.interimResults = true;
-      recognitionRef.current.lang = 'en-US';
+      const SpeechRecognitionConstructor = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognitionConstructor();
+      recognitionRef.current!.continuous = true;
+      recognitionRef.current!.interimResults = true;
+      recognitionRef.current!.lang = 'en-US';
 
-      recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
+      recognitionRef.current!.onresult = (event: SpeechRecognitionEvent) => {
         const transcript = Array.from(event.results)
           .map(result => result[0])
           .map(result => result.transcript)
@@ -77,7 +76,7 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
         }
       };
 
-      recognitionRef.current.onerror = (event) => {
+      recognitionRef.current!.onerror = (event: SpeechRecognitionErrorEvent) => {
         console.error('Speech recognition error:', event.error);
         setIsListening(false);
         toast({
@@ -88,7 +87,7 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
       };
     }
 
-    // Initialize Speech Synthesis
+    // Initiative Speech Synthesis
     synthesisRef.current = window.speechSynthesis;
 
     return () => {

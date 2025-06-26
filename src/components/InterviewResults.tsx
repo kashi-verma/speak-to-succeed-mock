@@ -1,7 +1,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, Clock, MessageSquare, RotateCcw } from 'lucide-react';
+import { CheckCircle, Clock, MessageSquare, RotateCcw, Brain } from 'lucide-react';
 
 interface InterviewResultsProps {
   data: {
@@ -9,6 +9,7 @@ interface InterviewResultsProps {
     questionsAnswered: number;
     conversation: Array<{ type: 'ai' | 'user', content: string }>;
     duration: number;
+    aiPowered?: boolean;
   };
   onStartNew: () => void;
 }
@@ -17,21 +18,27 @@ const InterviewResults = ({ data, onStartNew }: InterviewResultsProps) => {
   const userResponses = data.conversation.filter(item => item.type === 'user');
   const avgResponseLength = userResponses.reduce((acc, response) => acc + response.content.length, 0) / userResponses.length;
 
+  // Enhanced feedback for AI-powered interviews
   const feedback = [
     {
       category: 'Communication',
       score: Math.min(100, Math.max(60, Math.round(avgResponseLength / 2))),
-      feedback: avgResponseLength > 100 ? 'Great detail in your responses!' : 'Try to provide more detailed answers.'
+      feedback: avgResponseLength > 150 ? 'Excellent detailed responses that demonstrate depth of knowledge!' : 
+                avgResponseLength > 100 ? 'Good level of detail in your responses.' : 
+                'Consider providing more detailed examples in your answers.'
     },
     {
       category: 'Engagement',
-      score: Math.round((data.questionsAnswered / 5) * 100),
-      feedback: data.questionsAnswered >= 4 ? 'Excellent engagement throughout!' : 'Good participation, consider completing more questions.'
+      score: Math.min(100, Math.max(70, (data.questionsAnswered / 8) * 100)),
+      feedback: data.questionsAnswered >= 8 ? 'Outstanding engagement throughout the entire interview!' : 
+                data.questionsAnswered >= 5 ? 'Good participation and interview completion.' : 
+                'Consider completing more questions to demonstrate full engagement.'
     },
     {
-      category: 'Professionalism',
-      score: 85, // Mock score
-      feedback: 'Maintained professional tone throughout the interview.'
+      category: 'Adaptability',
+      score: data.aiPowered ? Math.min(95, 75 + (data.questionsAnswered * 2)) : 85,
+      feedback: data.aiPowered ? 'Great job adapting to AI-generated follow-up questions!' : 
+                'Maintained good responses throughout structured questions.'
     }
   ];
 
@@ -45,8 +52,9 @@ const InterviewResults = ({ data, onStartNew }: InterviewResultsProps) => {
         <h1 className="text-4xl font-bold text-gray-900 mb-2">
           Interview Complete!
         </h1>
-        <p className="text-xl text-gray-600">
-          Great job on your {data.role} mock interview
+        <p className="text-xl text-gray-600 flex items-center justify-center gap-2">
+          {data.aiPowered && <Brain className="w-5 h-5 text-purple-600" />}
+          Great job on your {data.aiPowered ? 'AI-powered' : ''} {data.role} mock interview
         </p>
       </div>
 
@@ -63,19 +71,37 @@ const InterviewResults = ({ data, onStartNew }: InterviewResultsProps) => {
         <Card className="text-center">
           <CardHeader>
             <Clock className="w-8 h-8 text-green-600 mx-auto mb-2" />
-            <CardTitle className="text-2xl">~{Math.round(data.questionsAnswered * 2)}</CardTitle>
+            <CardTitle className="text-2xl">~{Math.round(data.questionsAnswered * 2.5)}</CardTitle>
             <CardDescription>Minutes Duration</CardDescription>
           </CardHeader>
         </Card>
         
         <Card className="text-center">
           <CardHeader>
-            <CheckCircle className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+            {data.aiPowered ? <Brain className="w-8 h-8 text-purple-600 mx-auto mb-2" /> : <CheckCircle className="w-8 h-8 text-purple-600 mx-auto mb-2" />}
             <CardTitle className="text-2xl">{Math.round(feedback.reduce((sum, f) => sum + f.score, 0) / feedback.length)}%</CardTitle>
             <CardDescription>Overall Score</CardDescription>
           </CardHeader>
         </Card>
       </div>
+
+      {data.aiPowered && (
+        <Card className="mb-8 bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-purple-800">
+              <Brain className="w-5 h-5" />
+              AI-Powered Interview Insights
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-purple-700">
+              You completed an advanced AI-powered interview that adapted questions based on your responses. 
+              The AI interviewer provided personalized follow-ups and dynamically adjusted the conversation flow, 
+              giving you a more realistic and challenging interview experience.
+            </p>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Feedback */}
       <Card className="mb-8">
@@ -123,7 +149,7 @@ const InterviewResults = ({ data, onStartNew }: InterviewResultsProps) => {
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
                     message.type === 'ai' ? 'bg-blue-500' : 'bg-green-500'
                   }`}>
-                    {message.type === 'ai' ? 'AI' : 'YOU'}
+                    {message.type === 'ai' ? (data.aiPowered ? '🤖' : 'AI') : 'YOU'}
                   </div>
                   <p className="text-gray-800 leading-relaxed flex-1">
                     {message.content}
@@ -147,7 +173,7 @@ const InterviewResults = ({ data, onStartNew }: InterviewResultsProps) => {
         </Button>
         
         <div className="text-sm text-gray-500">
-          Keep practicing to improve your interview skills!
+          {data.aiPowered ? 'Experience more dynamic AI interviews!' : 'Keep practicing to improve your interview skills!'}
         </div>
       </div>
     </div>

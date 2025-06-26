@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Briefcase, Users, Code, Mic, Volume2, Brain } from 'lucide-react';
+import { Briefcase, Users, Code, Mic, Volume2, MessageSquare } from 'lucide-react';
 import Logo from './Logo';
 
 interface InterviewWelcomeProps {
@@ -42,9 +42,9 @@ const InterviewWelcome = ({ onStartInterview }: InterviewWelcomeProps) => {
 
   const features = [
     {
-      icon: Brain,
-      title: 'AI-Powered Questions',
-      description: 'Dynamic questions that adapt based on your responses'
+      icon: MessageSquare,
+      title: 'Structured Questions',
+      description: 'Curated questions designed specifically for each role'
     },
     {
       icon: Mic,
@@ -69,8 +69,8 @@ const InterviewWelcome = ({ onStartInterview }: InterviewWelcomeProps) => {
           Master Your Interview Skills
         </h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-          Practice with our AI-powered interview simulator designed to help you succeed in your next job interview.
-          Get personalized questions, real-time feedback, and build confidence.
+          Practice with our structured interview simulator designed to help you succeed in your next job interview.
+          Get role-specific questions, real-time feedback, and build confidence.
         </p>
       </div>
 
@@ -134,7 +134,7 @@ const InterviewWelcome = ({ onStartInterview }: InterviewWelcomeProps) => {
           disabled={!selectedRole}
           className="px-8 py-3 text-lg bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800"
         >
-          Start AI Interview
+          Start Mock Interview
         </Button>
         {!selectedRole && (
           <p className="text-sm text-gray-500 mt-2">

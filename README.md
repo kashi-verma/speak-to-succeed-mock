@@ -23,13 +23,13 @@
 ## 📸 Screenshots
 
 ### 🎯 Home Page
-![Home Page](/mnt/data/c0ac499c-c998-4d0f-9401-c78bc37789bc.png)
+![Home Page](/src/assets/image1.png)
 
 ### 👨‍💻 Role Selection
-![Role Selection](/mnt/data/c0ec6b4f-81d7-4f43-8d24-e617a658062d.png)
+![Role Selection](/src/assets/image2.png)
 
 ### 🧠 Interview Simulation
-![Interview Interface](/mnt/data/850b8aaa-68e1-4b9c-bb74-ee798305069e.png)
+![Interview Interface](/src/assets/image3.png)
 
 ---
 

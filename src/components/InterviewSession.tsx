@@ -92,7 +92,7 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
       const firstQuestion = response.question;
       
       setCurrentQuestion(firstQuestion);
-      setConversation([{ type: 'ai', content: firstQuestion }]);
+      setConversation([{ type: 'ai' as const, content: firstQuestion }]);
       if (response.newTopic) {
         setCurrentTopic(response.newTopic);
       }
@@ -149,7 +149,7 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
     stopListening();
     setIsProcessing(true);
     
-    const updatedConversation = [...conversation, { type: 'user', content: response }];
+    const updatedConversation = [...conversation, { type: 'user' as const, content: response }];
     setConversation(updatedConversation);
     
     // Check if user wants to end interview
@@ -171,7 +171,7 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
       if (!aiResponse.shouldContinue) {
         // AI decided to end the interview
         const finalMessage = aiResponse.question;
-        setConversation(prev => [...prev, { type: 'ai', content: finalMessage }]);
+        setConversation(prev => [...prev, { type: 'ai' as const, content: finalMessage }]);
         speakQuestion(finalMessage);
         
         setTimeout(() => {
@@ -188,7 +188,7 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
         setCurrentTopic(aiResponse.newTopic);
       }
       
-      const finalConversation = [...updatedConversation, { type: 'ai', content: aiResponse.question }];
+      const finalConversation = [...updatedConversation, { type: 'ai' as const, content: aiResponse.question }];
       setConversation(finalConversation);
       speakQuestion(aiResponse.question);
       
@@ -203,7 +203,7 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
       // Fallback question
       const fallbackQuestion = "Can you tell me more about that experience?";
       setCurrentQuestion(fallbackQuestion);
-      setConversation(prev => [...prev, { type: 'ai', content: fallbackQuestion }]);
+      setConversation(prev => [...prev, { type: 'ai' as const, content: fallbackQuestion }]);
       speakQuestion(fallbackQuestion);
     } finally {
       setIsProcessing(false);

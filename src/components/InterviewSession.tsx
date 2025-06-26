@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,43 +19,213 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
   const [questionCount, setQuestionCount] = useState(0);
   const [conversation, setConversation] = useState<Array<{ type: 'ai' | 'user', content: string }>>([]);
   const [hasStarted, setHasStarted] = useState(false);
+  const [currentTopic, setCurrentTopic] = useState(0);
+  const [questionsPerTopic, setQuestionsPerTopic] = useState(0);
   
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const synthesisRef = useRef<SpeechSynthesis | null>(null);
 
-  // AI Interview Logic
-  const interviewQuestions = {
-    'Software Engineer': [
-      "Hello, welcome to your mock interview session. Can you tell me a bit about yourself and your background in software engineering?",
-      "What programming languages are you most comfortable with and why?",
-      "Tell me about a challenging technical problem you've solved recently.",
-      "How do you approach debugging complex issues in your code?",
-      "What's your experience with version control systems like Git?"
-    ],
-    'Data Analyst': [
-      "Hello, welcome to your mock interview session. Can you tell me about your experience with data analysis?",
-      "What data visualization tools have you worked with?",
-      "How do you ensure data quality in your analysis?",
-      "Tell me about a time when you discovered an interesting insight from data.",
-      "What's your approach to presenting complex data to non-technical stakeholders?"
-    ],
-    'Product Manager': [
-      "Hello, welcome to your mock interview session. What drew you to product management?",
-      "How do you prioritize features in a product roadmap?",
-      "Tell me about a time you had to make a difficult product decision.",
-      "How do you gather and incorporate user feedback?",
-      "What metrics do you use to measure product success?"
-    ],
-    'Marketing Manager': [
-      "Hello, welcome to your mock interview session. What's your experience in marketing?",
-      "How do you measure the success of a marketing campaign?",
-      "Tell me about a marketing challenge you've overcome.",
-      "What's your approach to understanding target audiences?",
-      "How do you stay updated with marketing trends?"
-    ]
+  // Enhanced AI Interview Logic with multiple topics and follow-ups
+  const interviewStructure = {
+    'Software Engineer': {
+      topics: [
+        {
+          name: 'Background & Experience',
+          questions: [
+            "Hello, welcome to your mock interview session. Can you tell me about yourself and your software engineering background?",
+            "What programming languages are you most comfortable with and why did you choose them?",
+            "How many years of experience do you have in software development?",
+            "What type of projects have you worked on recently?"
+          ],
+          followUps: [
+            "Can you elaborate more on that specific technology?",
+            "What challenges did you face in that project?",
+            "How did you overcome those technical difficulties?",
+            "What would you do differently if you had to redo that project?"
+          ]
+        },
+        {
+          name: 'Technical Skills',
+          questions: [
+            "Tell me about a challenging technical problem you've solved recently.",
+            "How do you approach debugging complex issues in your code?",
+            "What's your experience with version control systems like Git?",
+            "How do you ensure code quality in your projects?"
+          ],
+          followUps: [
+            "Can you walk me through your debugging process step by step?",
+            "What tools do you use for code review?",
+            "How do you handle merge conflicts?",
+            "What testing strategies do you implement?"
+          ]
+        },
+        {
+          name: 'Problem Solving',
+          questions: [
+            "Describe a time when you had to learn a new technology quickly.",
+            "How do you stay updated with the latest technology trends?",
+            "Tell me about a time you disagreed with a technical decision.",
+            "How do you handle tight deadlines in development projects?"
+          ],
+          followUps: [
+            "What resources did you use to learn that technology?",
+            "How long did it take you to become proficient?",
+            "What was the outcome of that disagreement?",
+            "How do you prioritize tasks when under pressure?"
+          ]
+        }
+      ]
+    },
+    'Data Analyst': {
+      topics: [
+        {
+          name: 'Background & Experience',
+          questions: [
+            "Hello, welcome to your mock interview session. Can you tell me about your experience with data analysis?",
+            "What data analysis tools and technologies are you proficient in?",
+            "What types of datasets have you worked with?",
+            "How do you approach a new data analysis project?"
+          ],
+          followUps: [
+            "Which tool do you prefer and why?",
+            "What was the largest dataset you've analyzed?",
+            "How do you handle missing or inconsistent data?",
+            "What's your process for data validation?"
+          ]
+        },
+        {
+          name: 'Technical Skills',
+          questions: [
+            "What data visualization tools have you worked with?",
+            "How do you ensure data quality in your analysis?",
+            "Tell me about your experience with SQL and databases.",
+            "What statistical methods do you commonly use?"
+          ],
+          followUps: [
+            "Can you describe a complex visualization you've created?",
+            "What's your approach to data cleaning?",
+            "How do you optimize SQL queries for large datasets?",
+            "When would you use regression analysis versus other methods?"
+          ]
+        },
+        {
+          name: 'Business Impact',
+          questions: [
+            "Tell me about a time when you discovered an interesting insight from data.",
+            "How do you present complex data to non-technical stakeholders?",
+            "Describe a project where your analysis influenced business decisions.",
+            "How do you measure the success of your analysis?"
+          ],
+          followUps: [
+            "What was the business impact of that insight?",
+            "How do you simplify technical concepts for executives?",
+            "What was the outcome of that business decision?",
+            "What metrics do you track to validate your analysis?"
+          ]
+        }
+      ]
+    },
+    'Product Manager': {
+      topics: [
+        {
+          name: 'Background & Experience',
+          questions: [
+            "Hello, welcome to your mock interview session. What drew you to product management?",
+            "What products have you managed in your career?",
+            "How do you define a successful product?",
+            "What's your experience with product lifecycle management?"
+          ],
+          followUps: [
+            "What aspects of product management do you enjoy most?",
+            "What was your biggest product success?",
+            "How do you measure product success?",
+            "How do you handle product failures or setbacks?"
+          ]
+        },
+        {
+          name: 'Strategy & Prioritization',
+          questions: [
+            "How do you prioritize features in a product roadmap?",
+            "Tell me about a time you had to make a difficult product decision.",
+            "How do you balance user needs with business objectives?",
+            "What frameworks do you use for product planning?"
+          ],
+          followUps: [
+            "What criteria do you use for prioritization?",
+            "How did you gather data to make that decision?",
+            "Can you give me an example of this balance?",
+            "How do you adapt your roadmap when priorities change?"
+          ]
+        },
+        {
+          name: 'User & Market Focus',
+          questions: [
+            "How do you gather and incorporate user feedback?",
+            "What metrics do you use to measure product success?",
+            "How do you conduct market research for new features?",
+            "Tell me about a time you pivoted based on user feedback."
+          ],
+          followUps: [
+            "What methods do you use to collect feedback?",
+            "Which metrics are most important for your products?",
+            "How do you validate market demand?",
+            "What was the result of that pivot?"
+          ]
+        }
+      ]
+    },
+    'Marketing Manager': {
+      topics: [
+        {
+          name: 'Background & Experience',
+          questions: [
+            "Hello, welcome to your mock interview session. What's your experience in marketing?",
+            "What marketing channels have you worked with?",
+            "How do you approach developing a marketing strategy?",
+            "What types of campaigns have you managed?"
+          ],
+          followUps: [
+            "Which marketing channel has been most effective for you?",
+            "What's your process for market research?",
+            "Can you describe your most successful campaign?",
+            "How do you adapt strategies for different audiences?"
+          ]
+        },
+        {
+          name: 'Campaign Management',
+          questions: [
+            "How do you measure the success of a marketing campaign?",
+            "Tell me about a marketing challenge you've overcome.",
+            "What's your approach to budget allocation across channels?",
+            "How do you A/B test your marketing initiatives?"
+          ],
+          followUps: [
+            "What KPIs do you focus on most?",
+            "What strategies did you use to overcome that challenge?",
+            "How do you determine ROI for different channels?",
+            "Can you share an example of a successful A/B test?"
+          ]
+        },
+        {
+          name: 'Audience & Analytics',
+          questions: [
+            "What's your approach to understanding target audiences?",
+            "How do you stay updated with marketing trends?",
+            "Tell me about your experience with marketing analytics.",
+            "How do you personalize marketing messages for different segments?"
+          ],
+          followUps: [
+            "What research methods do you use for audience analysis?",
+            "Which trends are you most excited about currently?",
+            "What analytics tools do you prefer?",
+            "Can you give me an example of successful personalization?"
+          ]
+        }
+      ]
+    }
   };
 
-  const currentQuestions = interviewQuestions[role as keyof typeof interviewQuestions] || interviewQuestions['Software Engineer'];
+  const currentStructure = interviewStructure[role as keyof typeof interviewStructure] || interviewStructure['Software Engineer'];
 
   useEffect(() => {
     // Initialize Speech Recognition
@@ -87,7 +258,6 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
       };
     }
 
-    // Initiative Speech Synthesis
     synthesisRef.current = window.speechSynthesis;
 
     return () => {
@@ -102,9 +272,12 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
 
   const startInterview = () => {
     setHasStarted(true);
-    speakQuestion(currentQuestions[0]);
-    setCurrentQuestion(currentQuestions[0]);
-    setConversation([{ type: 'ai', content: currentQuestions[0] }]);
+    setCurrentTopic(0);
+    setQuestionsPerTopic(0);
+    const firstQuestion = currentStructure.topics[0].questions[0];
+    speakQuestion(firstQuestion);
+    setCurrentQuestion(firstQuestion);
+    setConversation([{ type: 'ai', content: firstQuestion }]);
   };
 
   const speakQuestion = (question: string) => {
@@ -138,25 +311,51 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
     }
   };
 
+  const getNextQuestion = () => {
+    const currentTopicData = currentStructure.topics[currentTopic];
+    
+    // If we haven't asked all main questions for this topic
+    if (questionsPerTopic < currentTopicData.questions.length) {
+      return currentTopicData.questions[questionsPerTopic];
+    }
+    
+    // If we've asked all main questions, ask follow-ups (up to 2 per topic)
+    if (questionsPerTopic < currentTopicData.questions.length + 2) {
+      const followUpIndex = questionsPerTopic - currentTopicData.questions.length;
+      return currentTopicData.followUps[followUpIndex % currentTopicData.followUps.length];
+    }
+    
+    // Move to next topic
+    const nextTopic = currentTopic + 1;
+    if (nextTopic < currentStructure.topics.length) {
+      setCurrentTopic(nextTopic);
+      setQuestionsPerTopic(0);
+      return currentStructure.topics[nextTopic].questions[0];
+    }
+    
+    return null; // End interview
+  };
+
   const handleUserResponse = (response: string) => {
     if (response.trim().length === 0) return;
     
     stopListening();
     setConversation(prev => [...prev, { type: 'user', content: response }]);
     
-    // Check if interview should end
-    if (response.toLowerCase().includes('end interview') || questionCount >= currentQuestions.length - 1) {
+    // Check if user wants to end interview
+    if (response.toLowerCase().includes('end interview') || response.toLowerCase().includes('finish interview')) {
       endInterview();
       return;
     }
 
     // Move to next question
     setTimeout(() => {
-      const nextQuestionIndex = questionCount + 1;
-      if (nextQuestionIndex < currentQuestions.length) {
-        const nextQuestion = currentQuestions[nextQuestionIndex];
+      const nextQuestion = getNextQuestion();
+      
+      if (nextQuestion) {
         setCurrentQuestion(nextQuestion);
-        setQuestionCount(nextQuestionIndex);
+        setQuestionCount(prev => prev + 1);
+        setQuestionsPerTopic(prev => prev + 1);
         setConversation(prev => [...prev, { type: 'ai', content: nextQuestion }]);
         speakQuestion(nextQuestion);
       } else {
@@ -171,17 +370,26 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
       synthesisRef.current.cancel();
     }
     
-    const finalMessage = "Thank you for completing the mock interview. You did great!";
+    const finalMessage = "Thank you for completing the mock interview. You've covered multiple topics and provided detailed responses. Great job!";
     speakQuestion(finalMessage);
     
     setTimeout(() => {
       onCompleteInterview({
         role,
         questionsAnswered: questionCount + 1,
+        topicsCovered: currentTopic + 1,
         conversation,
-        duration: Date.now() // Simple timestamp for demo
+        duration: Date.now()
       });
-    }, 2000);
+    }, 3000);
+  };
+
+  const getTotalProgress = () => {
+    const totalTopics = currentStructure.topics.length;
+    const questionsPerTopicTarget = 6; // 4 main + 2 follow-ups per topic
+    const totalQuestions = totalTopics * questionsPerTopicTarget;
+    const currentProgress = (currentTopic * questionsPerTopicTarget) + questionsPerTopic;
+    return Math.min(100, (currentProgress / totalQuestions) * 100);
   };
 
   return (
@@ -216,8 +424,8 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
           </CardHeader>
           <CardContent>
             <p className="text-lg text-gray-600 mb-8">
-              This is your {role} mock interview. The AI interviewer will ask you questions 
-              and you can respond naturally using your voice.
+              This is your comprehensive {role} mock interview. The AI interviewer will ask you questions 
+              across multiple topics with follow-up questions to dive deeper into your experience.
             </p>
             <div className="space-y-4 mb-8">
               <div className="flex items-center justify-center gap-2 text-gray-500">
@@ -227,6 +435,14 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
               <div className="flex items-center justify-center gap-2 text-gray-500">
                 <Volume2 className="w-5 h-5" />
                 <span>Make sure your speakers are on</span>
+              </div>
+            </div>
+            <div className="bg-blue-50 p-4 rounded-lg mb-8">
+              <h3 className="font-semibold text-blue-900 mb-2">Interview Topics:</h3>
+              <div className="text-sm text-blue-800 space-y-1">
+                {currentStructure.topics.map((topic, index) => (
+                  <div key={index}>• {topic.name}</div>
+                ))}
               </div>
             </div>
             <Button 
@@ -243,16 +459,21 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
           {/* Progress */}
           <div className="bg-white rounded-lg p-4 shadow-sm">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-gray-600">Progress</span>
+              <span className="text-sm font-medium text-gray-600">
+                Progress: {currentStructure.topics[currentTopic]?.name}
+              </span>
               <span className="text-sm text-gray-500">
-                {questionCount + 1} of {currentQuestions.length}
+                Topic {currentTopic + 1} of {currentStructure.topics.length}
               </span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
                 className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${((questionCount + 1) / currentQuestions.length) * 100}%` }}
+                style={{ width: `${getTotalProgress()}%` }}
               />
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              {questionCount + 1} questions asked
             </div>
           </div>
 

@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -188,37 +187,38 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
 
   if (!hasStarted) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="flex items-center justify-between mb-8">
+      <div className="container mx-auto px-4 py-6 md:py-8 max-w-4xl">
+        <div className="flex items-center justify-between mb-6 md:mb-8">
           <Button 
             variant="ghost" 
             onClick={onBackToWelcome}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 text-sm md:text-base"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Roles
+            <span className="hidden sm:inline">Back to Roles</span>
+            <span className="sm:hidden">Back</span>
           </Button>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-lg md:text-2xl font-bold text-gray-900 text-center flex-1 mx-4">
             {role.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())} Interview
           </h1>
-          <div></div>
+          <div className="w-16 md:w-20"></div>
         </div>
 
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+        <div className="text-center mb-6 md:mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 md:mb-4 px-2">
             Ready to Start Your Mock Interview?
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+          <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto mb-6 md:mb-8 px-4">
             You'll be asked {questions.length} questions designed specifically for the {role.replace('-', ' ')} role. 
             Speak naturally and we'll record your responses for feedback.
           </p>
         </div>
 
-        <div className="text-center">
+        <div className="text-center px-4">
           <Button 
             size="lg" 
             onClick={startInterview}
-            className="px-8 py-3 text-lg bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800"
+            className="w-full sm:w-auto px-6 md:px-8 py-3 text-base md:text-lg bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800"
           >
             Start Interview
           </Button>
@@ -228,33 +228,35 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="container mx-auto px-4 py-6 md:py-8 max-w-4xl">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6 md:mb-8">
         <Button 
           variant="ghost" 
           onClick={onBackToWelcome}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 text-sm md:text-base"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Roles
+          <span className="hidden sm:inline">Back to Roles</span>
+          <span className="sm:hidden">Back</span>
         </Button>
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-lg md:text-2xl font-bold text-gray-900 text-center flex-1 mx-2 md:mx-4">
           {role.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())} Interview
         </h1>
         <Button 
           variant="destructive" 
           onClick={endInterview}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 text-sm md:text-base"
         >
           <Square className="w-4 h-4" />
-          End Interview
+          <span className="hidden sm:inline">End Interview</span>
+          <span className="sm:hidden">End</span>
         </Button>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-4 md:space-y-6">
         {/* Progress */}
-        <div className="bg-white rounded-lg p-4 shadow-sm">
+        <div className="bg-white rounded-lg p-3 md:p-4 shadow-sm">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm font-medium text-gray-600">
               Question {currentQuestionIndex + 1} of {questions.length}
@@ -273,14 +275,14 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
 
         {/* Current Question */}
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Volume2 className="w-5 h-5 text-blue-600" />
+          <CardHeader className="pb-3 md:pb-4">
+            <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+              <Volume2 className="w-4 h-4 md:w-5 md:h-5 text-blue-600" />
               Interview Question
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-lg text-gray-800 leading-relaxed">
+            <p className="text-base md:text-lg text-gray-800 leading-relaxed">
               {currentQuestion}
             </p>
           </CardContent>
@@ -290,25 +292,25 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
         <div className="text-center">
           <VoiceVisualizer isListening={isListening} isSpeaking={isSpeaking} />
           
-          <div className="mt-6 space-y-2">
+          <div className="mt-4 md:mt-6 space-y-2">
             {isSpeaking && (
               <div className="flex items-center justify-center gap-2 text-blue-600">
-                <Volume2 className="w-5 h-5 animate-pulse" />
-                <span className="font-medium">Playing question...</span>
+                <Volume2 className="w-4 h-4 md:w-5 md:h-5 animate-pulse" />
+                <span className="font-medium text-sm md:text-base">Playing question...</span>
               </div>
             )}
             
             {isListening && (
               <div className="flex items-center justify-center gap-2 text-green-600">
-                <Mic className="w-5 h-5 animate-pulse" />
-                <span className="font-medium">Listening for your answer...</span>
+                <Mic className="w-4 h-4 md:w-5 md:h-5 animate-pulse" />
+                <span className="font-medium text-sm md:text-base">Listening for your answer...</span>
               </div>
             )}
             
             {!isSpeaking && !isListening && (
               <div className="flex items-center justify-center gap-2 text-gray-500">
-                <MicOff className="w-5 h-5" />
-                <span>Waiting for next question...</span>
+                <MicOff className="w-4 h-4 md:w-5 md:h-5" />
+                <span className="text-sm md:text-base">Waiting for next question...</span>
               </div>
             )}
           </div>
@@ -317,17 +319,17 @@ const InterviewSession = ({ role, onCompleteInterview, onBackToWelcome }: Interv
             <Button
               size="lg"
               onClick={isListening ? stopListening : startListening}
-              className={`mt-4 ${isListening ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}`}
+              className={`mt-4 w-full sm:w-auto text-sm md:text-base ${isListening ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}`}
               disabled={currentQuestionIndex >= questions.length}
             >
               {isListening ? (
                 <>
-                  <MicOff className="w-5 h-5 mr-2" />
+                  <MicOff className="w-4 h-4 md:w-5 md:h-5 mr-2" />
                   Stop Recording
                 </>
               ) : (
                 <>
-                  <Mic className="w-5 h-5 mr-2" />
+                  <Mic className="w-4 h-4 md:w-5 md:h-5 mr-2" />
                   Start Recording
                 </>
               )}

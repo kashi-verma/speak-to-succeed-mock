@@ -43,58 +43,58 @@ const InterviewResults = ({ data, onStartNew }: InterviewResultsProps) => {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="container mx-auto px-4 py-6 md:py-8 max-w-4xl">
       {/* Header */}
-      <div className="text-center mb-8">
+      <div className="text-center mb-6 md:mb-8">
         <div className="flex justify-center mb-4">
-          <CheckCircle className="w-16 h-16 text-green-500" />
+          <CheckCircle className="w-12 h-12 md:w-16 md:h-16 text-green-500" />
         </div>
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">
+        <h1 className="text-2xl md:text-4xl font-bold text-gray-900 mb-2 px-2">
           Interview Complete!
         </h1>
-        <p className="text-xl text-gray-600 flex items-center justify-center gap-2">
-          {data.aiPowered && <Brain className="w-5 h-5 text-purple-600" />}
+        <p className="text-lg md:text-xl text-gray-600 flex items-center justify-center gap-2 px-4">
+          {data.aiPowered && <Brain className="w-4 h-4 md:w-5 md:h-5 text-purple-600" />}
           Great job on your {data.aiPowered ? 'AI-powered' : ''} {data.role} mock interview
         </p>
       </div>
 
       {/* Stats */}
-      <div className="grid md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
         <Card className="text-center">
-          <CardHeader>
-            <MessageSquare className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-            <CardTitle className="text-2xl">{data.questionsAnswered}</CardTitle>
-            <CardDescription>Questions Answered</CardDescription>
+          <CardHeader className="pb-3 md:pb-4">
+            <MessageSquare className="w-6 h-6 md:w-8 md:h-8 text-blue-600 mx-auto mb-2" />
+            <CardTitle className="text-xl md:text-2xl">{data.questionsAnswered}</CardTitle>
+            <CardDescription className="text-sm md:text-base">Questions Answered</CardDescription>
           </CardHeader>
         </Card>
         
         <Card className="text-center">
-          <CardHeader>
-            <Clock className="w-8 h-8 text-green-600 mx-auto mb-2" />
-            <CardTitle className="text-2xl">~{Math.round(data.questionsAnswered * 2.5)}</CardTitle>
-            <CardDescription>Minutes Duration</CardDescription>
+          <CardHeader className="pb-3 md:pb-4">
+            <Clock className="w-6 h-6 md:w-8 md:h-8 text-green-600 mx-auto mb-2" />
+            <CardTitle className="text-xl md:text-2xl">~{Math.round(data.questionsAnswered * 2.5)}</CardTitle>
+            <CardDescription className="text-sm md:text-base">Minutes Duration</CardDescription>
           </CardHeader>
         </Card>
         
         <Card className="text-center">
-          <CardHeader>
-            {data.aiPowered ? <Brain className="w-8 h-8 text-purple-600 mx-auto mb-2" /> : <CheckCircle className="w-8 h-8 text-purple-600 mx-auto mb-2" />}
-            <CardTitle className="text-2xl">{Math.round(feedback.reduce((sum, f) => sum + f.score, 0) / feedback.length)}%</CardTitle>
-            <CardDescription>Overall Score</CardDescription>
+          <CardHeader className="pb-3 md:pb-4">
+            {data.aiPowered ? <Brain className="w-6 h-6 md:w-8 md:h-8 text-purple-600 mx-auto mb-2" /> : <CheckCircle className="w-6 h-6 md:w-8 md:h-8 text-purple-600 mx-auto mb-2" />}
+            <CardTitle className="text-xl md:text-2xl">{Math.round(feedback.reduce((sum, f) => sum + f.score, 0) / feedback.length)}%</CardTitle>
+            <CardDescription className="text-sm md:text-base">Overall Score</CardDescription>
           </CardHeader>
         </Card>
       </div>
 
       {data.aiPowered && (
-        <Card className="mb-8 bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
+        <Card className="mb-6 md:mb-8 bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-purple-800">
-              <Brain className="w-5 h-5" />
+            <CardTitle className="flex items-center gap-2 text-purple-800 text-base md:text-lg">
+              <Brain className="w-4 h-4 md:w-5 md:h-5" />
               AI-Powered Interview Insights
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-purple-700">
+            <p className="text-purple-700 text-sm md:text-base">
               You completed an advanced AI-powered interview that adapted questions based on your responses. 
               The AI interviewer provided personalized follow-ups and dynamically adjusted the conversation flow, 
               giving you a more realistic and challenging interview experience.
@@ -104,16 +104,16 @@ const InterviewResults = ({ data, onStartNew }: InterviewResultsProps) => {
       )}
 
       {/* Feedback */}
-      <Card className="mb-8">
+      <Card className="mb-6 md:mb-8">
         <CardHeader>
-          <CardTitle>Performance Feedback</CardTitle>
-          <CardDescription>Areas of strength and improvement</CardDescription>
+          <CardTitle className="text-base md:text-lg">Performance Feedback</CardTitle>
+          <CardDescription className="text-sm md:text-base">Areas of strength and improvement</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4 md:space-y-6">
           {feedback.map((item, index) => (
             <div key={index} className="space-y-2">
               <div className="flex justify-between items-center">
-                <h3 className="font-semibold text-gray-900">{item.category}</h3>
+                <h3 className="font-semibold text-gray-900 text-sm md:text-base">{item.category}</h3>
                 <span className="text-sm font-medium text-gray-600">{item.score}%</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
@@ -129,29 +129,29 @@ const InterviewResults = ({ data, onStartNew }: InterviewResultsProps) => {
       </Card>
 
       {/* Conversation Summary */}
-      <Card className="mb-8">
+      <Card className="mb-6 md:mb-8">
         <CardHeader>
-          <CardTitle>Interview Conversation</CardTitle>
-          <CardDescription>Review your interview dialogue</CardDescription>
+          <CardTitle className="text-base md:text-lg">Interview Conversation</CardTitle>
+          <CardDescription className="text-sm md:text-base">Review your interview dialogue</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4 max-h-96 overflow-y-auto">
+          <div className="space-y-3 md:space-y-4 max-h-80 md:max-h-96 overflow-y-auto">
             {data.conversation.map((message, index) => (
               <div 
                 key={index} 
-                className={`p-4 rounded-lg ${
+                className={`p-3 md:p-4 rounded-lg ${
                   message.type === 'ai' 
                     ? 'bg-blue-50 border-l-4 border-blue-500' 
                     : 'bg-green-50 border-l-4 border-green-500'
                 }`}
               >
-                <div className="flex items-start gap-3">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
+                <div className="flex items-start gap-2 md:gap-3">
+                  <div className={`w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center text-white text-xs md:text-sm font-bold ${
                     message.type === 'ai' ? 'bg-blue-500' : 'bg-green-500'
                   }`}>
                     {message.type === 'ai' ? (data.aiPowered ? '🤖' : 'AI') : 'YOU'}
                   </div>
-                  <p className="text-gray-800 leading-relaxed flex-1">
+                  <p className="text-gray-800 leading-relaxed flex-1 text-sm md:text-base">
                     {message.content}
                   </p>
                 </div>
@@ -162,13 +162,13 @@ const InterviewResults = ({ data, onStartNew }: InterviewResultsProps) => {
       </Card>
 
       {/* Actions */}
-      <div className="text-center space-y-4">
+      <div className="text-center space-y-4 px-4">
         <Button 
           size="lg" 
           onClick={onStartNew}
-          className="bg-blue-600 hover:bg-blue-700"
+          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-sm md:text-base"
         >
-          <RotateCcw className="w-5 h-5 mr-2" />
+          <RotateCcw className="w-4 h-4 md:w-5 md:h-5 mr-2" />
           Start New Interview
         </Button>
         

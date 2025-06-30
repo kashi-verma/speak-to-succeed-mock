@@ -1,4 +1,4 @@
-
+//Added Gemini API KEY
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, Clock, MessageSquare, RotateCcw, Brain } from 'lucide-react';

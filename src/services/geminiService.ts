@@ -19,25 +19,33 @@ export interface GeminiResponse {
 
 export class GeminiService {
   private conversationHistory: GeminiMessage[] = [];
+  private questionCount = 0;
   
   async generateQuestion(role: string, previousQuestions: string[] = [], userResponse?: string): Promise<string> {
     try {
-      const systemPrompt = this.getSystemPrompt(role);
-      const userPrompt = this.getUserPrompt(previousQuestions, userResponse);
-      
-      if (this.conversationHistory.length === 0) {
-        // Initialize conversation with system context
-        this.conversationHistory.push({
+      console.log('Generating question for role:', role);
+      console.log('Previous questions:', previousQuestions);
+      console.log('User response:', userResponse);
+      console.log('Question count:', this.questionCount);
+
+      // First question - initialize with system prompt
+      if (this.questionCount === 0) {
+        const systemPrompt = this.getSystemPrompt(role);
+        this.conversationHistory = [{
           role: 'user',
-          parts: [{ text: systemPrompt + '\n\n' + userPrompt }]
-        });
+          parts: [{ text: systemPrompt + '\n\nPlease start the interview with an opening question.' }]
+        }];
+        this.questionCount++;
       } else if (userResponse) {
-        // Add user response to history
+        // Add user's response to conversation
         this.conversationHistory.push({
           role: 'user',
-          parts: [{ text: `My answer: ${userResponse}\n\nPlease provide the next interview question.` }]
+          parts: [{ text: `My answer: ${userResponse}\n\nBased on this answer, please ask the next relevant interview question for a ${role.replace('-', ' ')} position. Make it progressively more challenging.` }]
         });
+        this.questionCount++;
       }
+
+      console.log('Conversation history:', this.conversationHistory);
 
       const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
         method: 'POST',
@@ -47,20 +55,24 @@ export class GeminiService {
         body: JSON.stringify({
           contents: this.conversationHistory,
           generationConfig: {
-            temperature: 0.7,
+            temperature: 0.8,
             topK: 40,
             topP: 0.95,
-            maxOutputTokens: 1024,
+            maxOutputTokens: 500,
           },
         }),
       });
 
       if (!response.ok) {
+        const errorData = await response.text();
+        console.error('Gemini API error:', response.status, errorData);
         throw new Error(`Gemini API error: ${response.status}`);
       }
 
       const data: GeminiResponse = await response.json();
-      const aiResponse = data.candidates[0]?.content?.parts[0]?.text || 'Could you tell me more about your background?';
+      console.log('Gemini response:', data);
+      
+      const aiResponse = data.candidates[0]?.content?.parts[0]?.text || this.getFallbackQuestion(this.questionCount);
       
       // Add AI response to history
       this.conversationHistory.push({
@@ -68,58 +80,57 @@ export class GeminiService {
         parts: [{ text: aiResponse }]
       });
 
+      console.log('Generated question:', aiResponse);
       return aiResponse;
     } catch (error) {
       console.error('Error generating question:', error);
-      // Fallback to basic questions
-      return this.getFallbackQuestion(previousQuestions.length);
+      // Return a contextual fallback question
+      return this.getFallbackQuestion(this.questionCount);
     }
   }
 
   private getSystemPrompt(role: string): string {
     const roleContext = {
-      'software-engineer': 'You are conducting a technical interview for a Software Engineer position. Focus on coding skills, algorithms, system design, and technical problem-solving.',
-      'product-manager': 'You are conducting an interview for a Product Manager position. Focus on product strategy, stakeholder management, prioritization, and business acumen.',
-      'business-analyst': 'You are conducting an interview for a Business Analyst position. Focus on analytical thinking, requirements gathering, process improvement, and data analysis.'
+      'software-engineer': 'You are conducting a technical interview for a Software Engineer position. Ask about coding skills, algorithms, system design, technical problem-solving, past projects, and programming languages.',
+      'product-manager': 'You are conducting an interview for a Product Manager position. Ask about product strategy, stakeholder management, prioritization, market analysis, user research, and business metrics.',
+      'business-analyst': 'You are conducting an interview for a Business Analyst position. Ask about analytical thinking, requirements gathering, process improvement, data analysis, stakeholder communication, and business process modeling.'
     };
 
     return `You are an experienced interviewer conducting a mock interview for a ${role.replace('-', ' ')} position. ${roleContext[role as keyof typeof roleContext] || 'Focus on relevant skills and experience for this role.'}
 
-Guidelines:
-- Ask one question at a time
-- Make questions progressively more challenging
-- Ask follow-up questions based on the candidate's responses
-- Keep questions professional and relevant to the role
-- Limit your response to just the question, no additional commentary
-- Make the interview feel natural and conversational`;
+IMPORTANT GUIDELINES:
+- Ask ONE question at a time
+- Make questions progressively more challenging as the interview progresses
+- Ask specific follow-up questions based on the candidate's previous answers
+- Keep questions professional and relevant to the ${role.replace('-', ' ')} role
+- DO NOT repeat previous questions
+- Make each question build upon previous responses
+- Limit your response to ONLY the question, no additional commentary
+- Vary question types: behavioral, technical, situational, and experience-based
+- After 6-8 questions, you can ask if they have questions for you
+
+Remember: This is question #${this.questionCount + 1} in the interview.`;
   }
 
-  private getUserPrompt(previousQuestions: string[], userResponse?: string): string {
-    if (previousQuestions.length === 0) {
-      return 'Please start the interview with an opening question.';
-    }
-    
-    if (userResponse) {
-      return `Based on my previous answer, please ask the next relevant interview question.`;
-    }
-    
-    return 'Please continue with the next interview question.';
-  }
-
-  private getFallbackQuestion(questionIndex: number): string {
+  private getFallbackQuestion(questionNumber: number): string {
     const fallbackQuestions = [
       "Tell me about yourself and your background.",
-      "Why are you interested in this position?",
-      "What are your greatest strengths?",
-      "Describe a challenging situation you faced and how you handled it.",
-      "Where do you see yourself in 5 years?"
+      "Why are you interested in this specific position?",
+      "What are your greatest professional strengths?",
+      "Describe a challenging project you worked on and how you handled it.",
+      "How do you stay updated with industry trends and technologies?",
+      "Tell me about a time when you had to work with a difficult team member.",
+      "What are your career goals for the next 3-5 years?",
+      "Do you have any questions about our company or this role?"
     ];
     
-    return fallbackQuestions[questionIndex % fallbackQuestions.length] || "Thank you for your time. Do you have any questions for me?";
+    return fallbackQuestions[Math.min(questionNumber - 1, fallbackQuestions.length - 1)] || "Thank you for your time. Do you have any questions for me?";
   }
 
   resetConversation(): void {
     this.conversationHistory = [];
+    this.questionCount = 0;
+    console.log('Conversation reset');
   }
 }
 

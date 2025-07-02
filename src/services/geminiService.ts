@@ -1,4 +1,4 @@
-//added gemini api key 
+//added gemini api key model
 const GEMINI_API_KEY = 'AIzaSyAmkIDFpbR39rQHG1HDhdFRrHvm7VIiPq0';
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 
